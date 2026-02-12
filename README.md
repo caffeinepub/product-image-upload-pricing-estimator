@@ -1,2 +1,3 @@
-# product-image-upload-pricing-estimator
-Exported from Caffeine project: Product image upload pricing estimator
+## Product image upload pricing estimator
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

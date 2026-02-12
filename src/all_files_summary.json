@@ -1,0 +1,18 @@
+{
+  "backend/main.mo": "Motoko actor providing median-based price estimates and mock product recognition using static sample data.",
+  "feature_evidence.json": "Feature evidence report mapping feature IDs to related frontend files, components, and test IDs.",
+  "frontend-file-summaries.txt": "Reference file containing prewritten short summaries for key frontend components and utilities.",
+  "frontend/index.css": "Tailwind base styles defining OKLCH color variables and theme tokens for light and dark mode.",
+  "frontend/index.html": "HTML entrypoint mounting the React app and loading main.tsx.",
+  "frontend/src/App.tsx": "Main React layout with header, footer, theme-based styling, and the PriceEstimatorPage.",
+  "frontend/src/components/EstimateResultCard.tsx": "UI card showing formatted price results, timestamps, confidence warnings, and sample breakdowns.",
+  "frontend/src/components/PriceEstimatorPage.tsx": "Handles image upload, drag-and-drop, preview, validation, submission, and displays estimation results.",
+  "frontend/src/hooks/useActor.ts": "React hook that creates and manages a backend actor instance, updating when identity changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Provides React context and hooks to manage Internet Identity authentication using AuthClient, including login state and persisted identities.",
+  "frontend/src/hooks/usePriceEstimate.ts": "Implements a hook that sends a demo value to backend actors to fetch price estimates and recognized products, managing loading and errors.",
+  "frontend/src/index.css": "Defines Tailwind base styles and custom OKLCH color variables for light and dark themes.",
+  "frontend/src/main.tsx": "Bootstraps the React app, wrapping it with QueryClientProvider and InternetIdentityProvider before rendering.",
+  "frontend/src/utils/imageFile.ts": "Validates image files for type and size, and provides helper functions for creating and revoking preview URLs.",
+  "frontend/tailwind.config.js": "Configures Tailwind with custom colors, typography, component settings, and animations leveraging OKLCH variables.",
+  "project_state.json": "Describes the project’s state, features, and pending requests for uploading product images and estimating prices."
+}

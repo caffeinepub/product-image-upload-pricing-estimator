@@ -1,0 +1,79 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-12T18:35:50.286Z",
+  "summary": "Frontend implements an image-upload/preview/submit/results single-page flow with themed styling and sample transparency, but backend does not accept/validate image payloads, does not integrate with any external HTTP pricing API, and does not return the required structured estimate response fields (currency, generatedAt, productName/confidence, etc.). Some extra, unrequested functionality/content was added (dummy product recognition, caffeine.ai footer attribution, and optional Internet Identity wiring).",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "Backend method accepts an uploaded image payload (base64/bytes), validates payload size/type, and returns a structured response with productName (optional), confidence (optional), samples (0+ numeric prices), computedPrice, currency, and a generatedAt timestamp; deterministic output for same samples; single-actor backend only.",
+      "reason": "Backend method `getPriceEstimate` accepts a Nat (`productValue`) rather than an image payload, has no size/type validation, and its response type lacks required fields (productName/confidence/currency/generatedAt/computedPrice naming). Timestamp and currency are instead synthesized in the frontend.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/hooks/usePriceEstimate.ts"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Configurable integration layer for obtaining market price samples from an external pricing/product-recognition HTTP API, with a single configuration point (base URL/API key placeholders), and graceful degradation with clear error when not configured or call fails.",
+      "reason": "No HTTP integration is present; `externalPriceSources` is a hardcoded dummy endpoint list and no API key/config point is shown. Samples are fabricated via `Array.repeat` rather than extracted from an external API response, and there is no 'not configured/call failed' error path for the UI.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Backend computes computedPrice from samples using a robust approach (e.g., median/trimmed mean) and documents the method in code comments; frontend shows sample count and sampled prices; if 0–1 samples, UI indicates low confidence while showing available data.",
+      "reason": "Frontend appears to show sample count, list prices, and a low-confidence indicator, but backend does not document the calculation method in code comments, and it traps on empty samples (`calcMedian` on empty array) rather than gracefully handling 0 samples.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/components/EstimateResultCard.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Backend 'product recognition' endpoint returning hardcoded probable products (`recognizeProducts`) unrelated to uploaded image analysis and not specified as a required endpoint.",
+      "reason": "REQ-2/REQ-3 require an image-upload price-estimate endpoint with optional productName/confidence as part of the estimate response; they do not request a separate product recognition method returning a hardcoded list.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/hooks/usePriceEstimate.ts"
+      ]
+    },
+    {
+      "description": "Frontend footer includes caffeine.ai attribution link with UTM tracking.",
+      "reason": "Not requested in any requirement; adds external branding/tracking content unrelated to the estimator functionality.",
+      "evidence": [
+        "frontend/src/App.tsx"
+      ]
+    },
+    {
+      "description": "Internet Identity provider/hooks and react-query actor recreation logic added even though authentication was not required.",
+      "reason": "BuildRequest states Internet Identity is the only supported auth option and is 'not required unless requested'; the diff adds II plumbing regardless of need for the estimator flow.",
+      "evidence": [
+        "frontend/src/main.tsx",
+        "frontend/src/hooks/useInternetIdentity.ts",
+        "frontend/src/hooks/useActor.ts"
+      ]
+    }
+  ],
+  "confidence": 0.74,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/EstimateResultCard.tsx",
+    "frontend/src/components/PriceEstimatorPage.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/usePriceEstimate.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/utils/imageFile.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

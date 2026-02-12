@@ -1,0 +1,96 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Product image upload pricing estimator (frontend)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Single-page upload → preview → submit flow that displays an estimated price result with loading/error states.",
+      "acceptanceCriteria": [
+        "User can select an image file (common formats like PNG/JPG) and see a preview before submitting.",
+        "User can remove/replace the selected image before submitting.",
+        "A clear call-to-action (e.g., “Estimate price”) triggers the request.",
+        "UI shows loading and error states during/after submission.",
+        "On success, UI displays: identified product label (if available), computed price, currency, and a timestamp of the estimate."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the single-page UI shell and wire in the pricing estimator flow (upload, preview, submit, result sections) as the primary app view."
+        },
+        {
+          "path": "frontend/src/components/PriceEstimatorPage.tsx",
+          "operation": "create",
+          "description": "Implement the upload/preview/replace/remove interactions, submission CTA, and result rendering; use shadcn-ui components (e.g., Card, Button, Input) to provide consistent structure and controls. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/usePriceEstimate.ts",
+          "operation": "create",
+          "description": "Add a React hook to manage submit lifecycle (idle/loading/success/error), call backend capabilities via the generated actor client, and normalize the response for the UI (including creating a client-side timestamp)."
+        },
+        {
+          "path": "frontend/src/utils/imageFile.ts",
+          "operation": "create",
+          "description": "Add image validation utilities (accept PNG/JPG, enforce a reasonable max size, create/revoke object URLs for previews) used by the upload flow."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Ensure the app renders the new App component and that the top-level providers remain intact (no new auth requirements introduced)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Show transparency for the estimate by displaying sample count, sample prices, and low-confidence messaging when samples are insufficient.",
+      "acceptanceCriteria": [
+        "Frontend displays the number of samples used and lists the sampled prices when available.",
+        "If fewer than a minimum threshold of samples is returned (e.g., 0–1), the UI indicates the estimate is low-confidence and still shows what data is available."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/EstimateResultCard.tsx",
+          "operation": "create",
+          "description": "Create a results component that displays: product label (if available), computed price, currency, generated timestamp, sample count, and an optional list of sampled prices; use shadcn-ui components (Card, Badge/Alert styles as available) for consistent presentation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/PriceEstimatorPage.tsx",
+          "operation": "modify",
+          "description": "Wire the backend-provided price samples into the UI, including: sampleCount display, listing samples when present, and a low-confidence indicator when sampleCount < 2."
+        },
+        {
+          "path": "frontend/src/hooks/usePriceEstimate.ts",
+          "operation": "modify",
+          "description": "Normalize backend values (bigint arrays/count) for display and expose derived flags (e.g., lowConfidence) based on sample thresholds."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Apply a coherent, responsive visual theme (non-blue/purple primary palette) suitable for a pricing tool.",
+      "acceptanceCriteria": [
+        "The app uses a consistent theme (background, text styles, buttons, cards) across upload, loading, error, and results states.",
+        "Primary colors are not blue/purple unless the user later requests them.",
+        "Layout is responsive (mobile and desktop) and remains usable on small screens."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "create",
+          "description": "Define global theme tokens (CSS variables used by Tailwind/shadcn) with a non-blue/purple primary palette (e.g., green/amber neutrals), base typography, and consistent surface/background styling."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Adjust/extend theme configuration as needed to support the chosen palette and consistent spacing/typography (keeping existing variable-driven color system intact)."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Apply a responsive layout container and consistent page spacing; ensure upload, loading, error, and results states share the same visual structure."
+        }
+      ]
+    }
+  ]
+}

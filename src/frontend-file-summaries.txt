@@ -1,0 +1,9 @@
+{
+  "frontend/src/App.tsx": "Main application shell with header, footer (including caffeine.ai attribution with UTM tracking), and PriceEstimatorPage as the primary content area.",
+  "frontend/src/components/PriceEstimatorPage.tsx": "Primary page component handling image upload, preview, drag-and-drop, file validation, submission flow, and displaying loading/error states and results.",
+  "frontend/src/components/EstimateResultCard.tsx": "Results display component showing computed price, product label, sample count, individual price samples, confidence indicators, and formatted timestamps.",
+  "frontend/src/hooks/usePriceEstimate.ts": "Custom React hook managing price estimation lifecycle, calling backend actor methods (getPriceEstimate and recognizeProducts), normalizing bigint responses, and exposing loading/error states.",
+  "frontend/src/utils/imageFile.ts": "Utility functions for image file validation (type, size limits), creating/revoking object URLs for image previews.",
+  "frontend/src/index.css": "Global styles with OKLCH color system using emerald green primary (160 hue) and warm amber accent (75 hue) for a professional pricing tool aesthetic, supporting both light and dark modes.",
+  "frontend/tailwind.config.js": "Tailwind configuration extending the theme with Inter font family and maintaining the OKLCH-based color token system."
+}

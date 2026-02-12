@@ -1,0 +1,113 @@
+{
+  "kind": "build_request",
+  "title": "Product image upload pricing estimator",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Create a single-page app flow where the user can upload a product image, preview it, submit it for analysis, and see a computed “accurate price” result.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "Create a app that will find the pricing of the product by the image uploaded and will calculate accurate price"
+        ]
+      },
+      "acceptanceCriteria": [
+        "User can select an image file (common formats like PNG/JPG) and see a preview before submitting.",
+        "User can remove/replace the selected image before submitting.",
+        "A clear call-to-action (e.g., “Estimate price”) triggers the request.",
+        "UI shows loading and error states during/after submission.",
+        "On success, UI displays: identified product label (if available), computed price, currency, and a timestamp of the estimate."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement backend endpoints to accept an uploaded image payload and return a price estimate response, including intermediate market price samples used in the calculation.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "Create a app that will find the pricing of the product by the image uploaded and will calculate accurate price"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes a method that accepts an image payload (e.g., base64 or byte array) and returns a structured response containing: productName (optional), confidence (optional), samples (0+ numeric prices), computedPrice, currency, and a generatedAt timestamp.",
+        "Backend validates payload size/type and returns a clear error message for invalid uploads.",
+        "Backend returns deterministic calculation output given the same set of sample prices.",
+        "No additional backend canisters/services are introduced (single-actor backend only)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add an integration layer (configurable) for obtaining market price samples from an external pricing/product-recognition HTTP API, and gracefully degrade when not configured.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "find the pricing of the product by the image uploaded"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend code has a single, well-defined configuration point for the external API (e.g., base URL and API key placeholders) without hardcoding secrets into the UI.",
+        "If the external API is not configured or the call fails, the backend returns a clear error that the UI can display, and no app crash occurs.",
+        "If the external API returns a list of offers/prices, the backend extracts numeric price samples and includes them in the response."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Define and implement the “accurate price” calculation method over the collected market price samples and show transparency in the UI (how many samples were used).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ],
+        "quotes": [
+          "calculate accurate price"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend computes a single computedPrice from the samples using a robust approach (e.g., median or trimmed mean) and documents the method in code comments.",
+        "Frontend displays the number of samples used and lists the sampled prices when available.",
+        "If fewer than a minimum threshold of samples is returned (e.g., 0–1), the UI indicates the estimate is low-confidence and still shows what data is available."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Apply a coherent, distinct visual theme across the app (colors, typography, spacing, components) appropriate for a product pricing tool, avoiding blue/purple as the primary palette.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The app uses a consistent theme (background, text styles, buttons, cards) across upload, loading, error, and results states.",
+        "Primary colors are not blue/purple unless the user later requests them.",
+        "Layout is responsive (mobile and desktop) and remains usable on small screens."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor (no additional backend services).",
+    "Do not edit any frontend files under immutablePaths (compose existing UI components instead).",
+    "Do not add third-party authentication providers; Internet Identity is the only supported auth option (not required unless requested).",
+    "Do not integrate LLM providers (OpenAI/Anthropic/etc.); only generic HTTP APIs are permitted for product/pricing lookup."
+  ],
+  "nonGoals": [
+    "Guaranteeing real-world “accurate” pricing regardless of data quality/coverage.",
+    "Building a marketplace, checkout, payments, or inventory system.",
+    "Real-time updates via WebSockets or chat-like features.",
+    "Storing large image libraries on-chain; the app should focus on per-request estimation."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
